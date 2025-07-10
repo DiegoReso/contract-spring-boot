@@ -17,7 +17,6 @@ public class ContractMapper {
                 .type(contractRequest.type())
                 .rating(contractRequest.rating())
                 .manager(contractRequest.manager())
-                .pdfPathFile(contractRequest.pdfPathFile())
                 .initiationContract(contractRequest.initiationContract())
                 .endContract(contractRequest.endContract())
                 .modality(contractRequest.modality())
