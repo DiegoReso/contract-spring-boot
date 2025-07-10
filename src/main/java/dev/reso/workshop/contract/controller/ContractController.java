@@ -1,13 +1,12 @@
 package dev.reso.workshop.contract.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.reso.workshop.contract.controller.request.ContractRequest;
 import dev.reso.workshop.contract.controller.response.ContractResponse;
 import dev.reso.workshop.contract.entities.Contract;
 import dev.reso.workshop.contract.exceptions.FileEmptyException;
-import dev.reso.workshop.contract.exceptions.FileStorageException;
+
 import dev.reso.workshop.contract.mapper.ContractMapper;
 import dev.reso.workshop.contract.service.ContractService;
 import dev.reso.workshop.contract.util.FileStorageService;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -44,7 +42,7 @@ public class ContractController {
             @RequestParam("contractData") String contractJson) throws JsonProcessingException {
 
         if (file.isEmpty()) {
-            throw new FileEmptyException("File is empty, choose a pdf file");
+            throw new FileEmptyException("The file is empty, choose a pdf file");
         }
 
         String pdfFilePath = fileStorageService.saveFile(file);
