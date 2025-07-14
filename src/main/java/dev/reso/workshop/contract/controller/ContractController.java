@@ -32,9 +32,17 @@ public class ContractController {
 
 
     @GetMapping
-    public List<ContractResponse> findAllContracts(){
+    public ResponseEntity<List<ContractResponse>>  findAllContracts(){
         List<Contract> contracts = service.findAllContracts();
-        return contracts.stream().map(ContractMapper::toContractResponse).toList();
+        List<ContractResponse> list = contracts.stream().map(ContractMapper::toContractResponse).toList();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ContractResponse>  findById(@PathVariable String id){
+        Contract contract = service.findContractById(id);
+        ContractResponse contractResponse = ContractMapper.toContractResponse(contract);
+        return ResponseEntity.ok(contractResponse);
     }
 
     @PostMapping
