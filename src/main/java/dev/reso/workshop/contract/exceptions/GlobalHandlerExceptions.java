@@ -27,6 +27,17 @@ public class GlobalHandlerExceptions {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
+    @ExceptionHandler(EntityNotFound.class)
+    public ResponseEntity<StandardError> handlerEntityNotFound(EntityNotFound e, HttpServletRequest request){
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.BAD_REQUEST.value());
+        err.setError("Contract not found");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<StandardError> handlerMaxSizeUploadExceed(MaxUploadSizeExceededException e, HttpServletRequest request){
         StandardError err = new StandardError();
