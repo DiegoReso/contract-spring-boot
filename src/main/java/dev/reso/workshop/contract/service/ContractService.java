@@ -32,6 +32,11 @@ public class ContractService {
         return repository.save(contract);
     }
 
+    public void deleteContract(String id){
+        Contract contract = findContractById(id);
+        repository.delete(contract);
+    }
+
 
     public Contract updateContractHelper(String id, Contract contractRequest){
         Contract contract = findContractById(id);
