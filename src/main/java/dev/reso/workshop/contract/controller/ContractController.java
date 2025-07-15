@@ -81,4 +81,10 @@ public class ContractController {
         ContractResponse contractResponse = ContractMapper.toContractResponse(newContract);
         return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContract(@PathVariable String id){
+        service.deleteContract(id);
+        return ResponseEntity.noContent().build();
+    }
 }
