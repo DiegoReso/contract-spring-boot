@@ -26,4 +26,27 @@ public class ContractService {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFound("Contract with ID " + id + " not found"));
     }
+
+    public Contract updateContract(String id, Contract contractRequest){
+        Contract contract = updateContractHelper(id, contractRequest);
+        return repository.save(contract);
+    }
+
+
+    public Contract updateContractHelper(String id, Contract contractRequest){
+        Contract contract = findContractById(id);
+        contract.setName(contractRequest.getName());
+        contract.setNumber(contractRequest.getNumber());
+        contract.setBalance(contractRequest.getBalance());
+        contract.setTotal(contractRequest.getTotal());
+        contract.setType(contractRequest.getType());
+        contract.setRating(contractRequest.getRating());
+        contract.setManager(contractRequest.getManager());
+        contract.setPdfPathFile(contractRequest.getPdfPathFile());
+        contract.setInitiationContract(contractRequest.getInitiationContract());
+        contract.setEndContract(contractRequest.getEndContract());
+        contract.setModality(contractRequest.getModality());
+
+        return contract;
+    }
 }
