@@ -45,6 +45,25 @@ public class ContractController {
         return ResponseEntity.ok(contractResponse);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ContractResponse> updateContract(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("contractData") String contractJson) throws  JsonProcessingException{
+
+        if (file.isEmpty()) {
+            throw new FileEmptyException("The file is empty, choose a pdf file");
+        }
+
+        String pdfFilePath = fileStorageService.saveFile(file);
+        ContractRequest contractRequest = objectMapper.readValue(contractJson, ContractRequest.class);
+        Contract contract = ContractMapper.toContract(contractRequest);
+        contract.setPdfPathFile(pdfFilePath);
+        Contract newContract = service.updateContract(id,contract);
+        ContractResponse contractResponse = ContractMapper.toContractResponse(newContract);
+        return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
+    }
+
     @PostMapping
     public ResponseEntity<ContractResponse>  insertContract(
             @RequestParam("file") MultipartFile file,
