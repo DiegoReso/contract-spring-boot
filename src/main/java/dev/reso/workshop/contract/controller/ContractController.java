@@ -45,6 +45,12 @@ public class ContractController {
         return ResponseEntity.ok(contractResponse);
     }
 
+    @GetMapping("/manager-search")
+    public  ResponseEntity<List<ContractResponse>> findContractByManager(@RequestParam(value = "manager", defaultValue = "") String manager){
+        List<ContractResponse> contractResponses  = service.findContractByManager(manager).stream().map(ContractMapper::toContractResponse).toList();
+        return ResponseEntity.ok(contractResponses);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ContractResponse> updateContract(
             @PathVariable String id,
