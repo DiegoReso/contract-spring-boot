@@ -37,6 +37,10 @@ public class ContractService {
         repository.delete(contract);
     }
 
+    public List<Contract>  findContractByManager(String manager){
+        return repository.findContractByManager(manager);
+    }
+
 
     public Contract updateContractHelper(String id, Contract contractRequest){
         Contract contract = findContractById(id);
