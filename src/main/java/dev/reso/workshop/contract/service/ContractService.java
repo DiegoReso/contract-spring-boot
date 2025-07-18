@@ -1,6 +1,7 @@
 package dev.reso.workshop.contract.service;
 
 import dev.reso.workshop.contract.entities.Contract;
+import dev.reso.workshop.contract.enums.ContractType;
 import dev.reso.workshop.contract.exceptions.EntityNotFound;
 import dev.reso.workshop.contract.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class ContractService {
         return repository.findContractByManager(manager);
     }
 
+    public List<Contract> findContractByType(ContractType type){
+            return repository.findContractByType(type);
+    }
 
     public Contract updateContractHelper(String id, Contract contractRequest){
         Contract contract = findContractById(id);
