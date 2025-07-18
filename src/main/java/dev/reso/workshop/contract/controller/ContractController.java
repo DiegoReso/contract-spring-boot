@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.reso.workshop.contract.controller.request.ContractRequest;
 import dev.reso.workshop.contract.controller.response.ContractResponse;
 import dev.reso.workshop.contract.entities.Contract;
+import dev.reso.workshop.contract.enums.ContractType;
 import dev.reso.workshop.contract.exceptions.FileEmptyException;
-
 import dev.reso.workshop.contract.mapper.ContractMapper;
 import dev.reso.workshop.contract.service.ContractService;
 import dev.reso.workshop.contract.util.FileStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +22,15 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ContractController {
 
-    @Autowired
-    private ContractService service;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final ContractService service;
+    private final ObjectMapper objectMapper;
+    private final FileStorageService fileStorageService;
+
+    public ContractController(ContractService service, ObjectMapper objectMapper, FileStorageService fileStorageService) {
+        this.service = service;
+        this.objectMapper = objectMapper;
+        this.fileStorageService = fileStorageService;
+    }
 
 
     @GetMapping
@@ -49,6 +51,14 @@ public class ContractController {
     public  ResponseEntity<List<ContractResponse>> findContractByManager(@RequestParam(value = "manager", defaultValue = "") String manager){
         List<ContractResponse> contractResponses  = service.findContractByManager(manager).stream().map(ContractMapper::toContractResponse).toList();
         return ResponseEntity.ok(contractResponses);
+    }
+
+    @GetMapping("/type-search")
+    public ResponseEntity<List<ContractResponse>> findContractByType(@RequestParam(value = "type", defaultValue = "") String type){
+        ContractType contractType = ContractType.valueOf(type.toUpperCase());
+        List<Contract> contracts = service.findContractByType(contractType);
+        List<ContractResponse> list = contracts.stream().map(ContractMapper::toContractResponse).toList();
+        return ResponseEntity.ok(list);
     }
 
     @PutMapping("/{id}")
