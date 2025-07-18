@@ -6,6 +6,7 @@ import dev.reso.workshop.contract.controller.request.ContractRequest;
 import dev.reso.workshop.contract.controller.response.ContractResponse;
 import dev.reso.workshop.contract.entities.Contract;
 import dev.reso.workshop.contract.enums.ContractType;
+import dev.reso.workshop.contract.exceptions.EntityNotFound;
 import dev.reso.workshop.contract.exceptions.FileEmptyException;
 import dev.reso.workshop.contract.mapper.ContractMapper;
 import dev.reso.workshop.contract.service.ContractService;
@@ -55,10 +56,15 @@ public class ContractController {
 
     @GetMapping("/type-search")
     public ResponseEntity<List<ContractResponse>> findContractByType(@RequestParam(value = "type", defaultValue = "") String type){
-        ContractType contractType = ContractType.valueOf(type.toUpperCase());
-        List<Contract> contracts = service.findContractByType(contractType);
-        List<ContractResponse> list = contracts.stream().map(ContractMapper::toContractResponse).toList();
-        return ResponseEntity.ok(list);
+        try{
+            ContractType contractType = ContractType.valueOf(type.toUpperCase());
+            List<Contract> contracts = service.findContractByType(contractType);
+            List<ContractResponse> list = contracts.stream().map(ContractMapper::toContractResponse).toList();
+            return ResponseEntity.ok(list);
+        }catch (IllegalArgumentException e){
+            throw new EntityNotFound("Type not found");
+        }
+
     }
 
     @PutMapping("/{id}")
