@@ -15,11 +15,13 @@ import dev.reso.workshop.contract.util.FileStorageService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -113,6 +115,15 @@ public class ContractController {
         Contract newContract = service.insertContract(contract);
         ContractResponse contractResponse = ContractMapper.toContractResponse(newContract);
         return new ResponseEntity<>(contractResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/range-date")
+    public ResponseEntity<List<Contract>> getContratosByInitiationDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+
+        List<Contract> contracts = service.getContratosByInitiationAndEndDateRange(startDate, endDate);
+        return ResponseEntity.ok(contracts);
     }
 
     @DeleteMapping("/{id}")
