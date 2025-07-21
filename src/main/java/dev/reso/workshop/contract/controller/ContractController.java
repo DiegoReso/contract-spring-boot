@@ -6,18 +6,25 @@ import dev.reso.workshop.contract.controller.request.ContractRequest;
 import dev.reso.workshop.contract.controller.response.ContractResponse;
 import dev.reso.workshop.contract.entities.Contract;
 import dev.reso.workshop.contract.enums.ContractType;
+import dev.reso.workshop.contract.exceptions.ContractValidationException;
 import dev.reso.workshop.contract.exceptions.EntityNotFound;
 import dev.reso.workshop.contract.exceptions.FileEmptyException;
 import dev.reso.workshop.contract.mapper.ContractMapper;
 import dev.reso.workshop.contract.service.ContractService;
 import dev.reso.workshop.contract.util.FileStorageService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/contracts")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -26,12 +33,7 @@ public class ContractController {
     private final ContractService service;
     private final ObjectMapper objectMapper;
     private final FileStorageService fileStorageService;
-
-    public ContractController(ContractService service, ObjectMapper objectMapper, FileStorageService fileStorageService) {
-        this.service = service;
-        this.objectMapper = objectMapper;
-        this.fileStorageService = fileStorageService;
-    }
+    private final Validator validator;
 
 
     @GetMapping
@@ -95,8 +97,17 @@ public class ContractController {
             throw new FileEmptyException("The file is empty, choose a pdf file");
         }
 
-        String pdfFilePath = fileStorageService.saveFile(file);
         ContractRequest contractRequest = objectMapper.readValue(contractJson, ContractRequest.class);
+
+        Set<ConstraintViolation<ContractRequest>> violations = validator.validate(contractRequest);
+        if (!violations.isEmpty()) {
+            String errorMessage = violations.stream()
+                    .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                    .collect(Collectors.joining(", "));
+            throw new ContractValidationException("Validation failed for ContractRequest: " + errorMessage);
+        }
+
+        String pdfFilePath = fileStorageService.saveFile(file);
         Contract contract = ContractMapper.toContract(contractRequest);
         contract.setPdfPathFile(pdfFilePath);
         Contract newContract = service.insertContract(contract);
