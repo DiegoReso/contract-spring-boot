@@ -3,11 +3,11 @@ package dev.reso.workshop.contract.exceptions;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.IOException;
@@ -88,6 +88,28 @@ public class GlobalHandlerExceptions {
         err.setTimestamp(Instant.now());
         err.setStatus(HttpStatus.BAD_REQUEST.value());
         err.setError("Validation failed");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<StandardError> handlerContractValidation(InvalidInputException e, HttpServletRequest request){
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.BAD_REQUEST.value());
+        err.setError("Invalid Input");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StandardError> handlerInvalidInputContract(MethodArgumentTypeMismatchException e, HttpServletRequest request){
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.BAD_REQUEST.value());
+        err.setError("Invalid Input");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
