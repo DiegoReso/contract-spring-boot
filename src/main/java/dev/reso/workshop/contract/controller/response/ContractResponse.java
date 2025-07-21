@@ -19,6 +19,7 @@ public record ContractResponse(String id,
                                String pdfPathFile,
                                Date initiationContract,
                                Date endContract,
-                               Modality modality
+                               Modality modality,
+                               CompanyResponse company
                                ) {
 }
