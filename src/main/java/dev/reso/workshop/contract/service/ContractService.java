@@ -2,11 +2,13 @@ package dev.reso.workshop.contract.service;
 
 import dev.reso.workshop.contract.entities.Contract;
 import dev.reso.workshop.contract.enums.ContractType;
+import dev.reso.workshop.contract.exceptions.ContractValidationException;
 import dev.reso.workshop.contract.exceptions.EntityNotFound;
 import dev.reso.workshop.contract.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,6 +46,18 @@ public class ContractService {
 
     public List<Contract> findContractByType(ContractType type){
             return repository.findContractByType(type);
+    }
+
+    public List<Contract> getContratosByInitiationAndEndDateRange(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            throw new ContractValidationException("Start and end dates cannot be null.");
+        }
+
+        if (startDate.after(endDate)) {
+            throw new ContractValidationException("The start date cannot be later than the end date.");
+        }
+
+        return repository.findByInitiationAndEndDateRange(startDate, endDate);
     }
 
     public Contract updateContractHelper(String id, Contract contractRequest){
