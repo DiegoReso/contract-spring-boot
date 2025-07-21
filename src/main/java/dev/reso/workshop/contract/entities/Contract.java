@@ -31,4 +31,5 @@ public class Contract {
     private Date initiationContract;
     private Date endContract;
     private Modality modality;
+    private Company company;
 }
