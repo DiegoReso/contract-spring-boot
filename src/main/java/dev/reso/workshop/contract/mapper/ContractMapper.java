@@ -1,7 +1,10 @@
 package dev.reso.workshop.contract.mapper;
 
+import dev.reso.workshop.contract.controller.request.CompanyRequest;
 import dev.reso.workshop.contract.controller.request.ContractRequest;
+import dev.reso.workshop.contract.controller.response.CompanyResponse;
 import dev.reso.workshop.contract.controller.response.ContractResponse;
+import dev.reso.workshop.contract.entities.Company;
 import dev.reso.workshop.contract.entities.Contract;
 import lombok.experimental.UtilityClass;
 
@@ -20,6 +23,7 @@ public class ContractMapper {
                 .initiationContract(contractRequest.initiationContract())
                 .endContract(contractRequest.endContract())
                 .modality(contractRequest.modality())
+                .company(toCompany(contractRequest.company()))
                 .build();
     }
 
@@ -37,6 +41,28 @@ public class ContractMapper {
                 .initiationContract(contract.getInitiationContract())
                 .endContract(contract.getEndContract())
                 .modality(contract.getModality())
+                .company(toCompanyResponse(contract.getCompany()))
+                .build();
+    }
+
+    public static Company toCompany(CompanyRequest companyRequest){
+        return Company.builder()
+                .name(companyRequest.name())
+                .email(companyRequest.email())
+                .phone(companyRequest.phone())
+                .address(companyRequest.address())
+                .cpnj(companyRequest.cpnj())
+                .build();
+    }
+
+    public static CompanyResponse toCompanyResponse(Company company){
+        return CompanyResponse.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .email(company.getEmail())
+                .phone(company.getPhone())
+                .address(company.getAddress())
+                .cpnj(company.getCpnj())
                 .build();
     }
 }
