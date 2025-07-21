@@ -81,4 +81,15 @@ public class GlobalHandlerExceptions {
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
+
+    @ExceptionHandler(ContractValidationException.class)
+    public ResponseEntity<StandardError> handlerContractValidation(ContractValidationException e, HttpServletRequest request){
+        StandardError err = new StandardError();
+        err.setTimestamp(Instant.now());
+        err.setStatus(HttpStatus.BAD_REQUEST.value());
+        err.setError("Validation failed");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
 }
