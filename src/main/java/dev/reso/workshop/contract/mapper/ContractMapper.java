@@ -57,7 +57,6 @@ public class ContractMapper {
 
     public static CompanyResponse toCompanyResponse(Company company){
         return CompanyResponse.builder()
-                .id(company.getId())
                 .name(company.getName())
                 .email(company.getEmail())
                 .phone(company.getPhone())
