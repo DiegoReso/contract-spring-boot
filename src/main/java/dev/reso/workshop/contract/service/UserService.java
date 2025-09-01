@@ -3,6 +3,7 @@ package dev.reso.workshop.contract.service;
 import dev.reso.workshop.contract.controller.request.UserRequest;
 import dev.reso.workshop.contract.controller.response.UserResponse;
 import dev.reso.workshop.contract.entities.User;
+import dev.reso.workshop.contract.exceptions.InvalidInputException;
 import dev.reso.workshop.contract.mapper.UserMapper;
 import dev.reso.workshop.contract.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class UserService {
 
     public UserResponse insertUser(UserRequest userRequest){
         if(existsByEmail(userRequest.email())){
-            throw new RuntimeException("Email ja cadastrado: " + userRequest.email());
+            throw new InvalidInputException("Email ja cadastrado: " + userRequest.email());
         }
 
         User user = UserMapper.toUSer(userRequest);
